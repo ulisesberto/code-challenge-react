@@ -49,6 +49,9 @@ export const Home = () => {
         </Typography>
 
         <Grid container spacing={3}>
+          <Grid size={{ xs: 12, md: enrollments.length === 0 ? 12 : 4 }}>
+            <NewEnrollmentForm onCreate={addEnrollment} />
+          </Grid>
           <Grid size={{ xs: 12, md: 12 }}>
             <EnrollmentTable
               enrollments={filteredEnrollments}
@@ -58,9 +61,6 @@ export const Home = () => {
               setSearchTerm={setSearchTerm}
               onConfirm={confirmEnrollment}
             />
-          </Grid>
-          <Grid size={{ xs: 12, md: enrollments.length === 0 ? 12 : 4 }}>
-            <NewEnrollmentForm onCreate={addEnrollment} />
           </Grid>
         </Grid>
       </Stack>
