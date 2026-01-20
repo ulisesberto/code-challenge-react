@@ -1,5 +1,6 @@
 import React from "react";
-import { TextField } from "@mui/material";
+import { TextField, InputAdornment } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
 interface Props {
   value: string;
@@ -14,6 +15,15 @@ export const EnrollmentSearchBar: React.FC<Props> = ({ value, onChange }) => {
       value={value}
       onChange={(e) => onChange(e.target.value)}
       sx={{ minWidth: 250 }}
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon sx={{ fontSize: 20 }} />
+            </InputAdornment>
+          ),
+        },
+      }}
     />
   );
 };

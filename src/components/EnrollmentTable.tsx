@@ -76,28 +76,56 @@ export const EnrollmentTable: React.FC<Props> = ({
               />
             </Box>
           </Box>
-          {!enrollments || enrollments.length === 0 ? (
-            <Typography>No enrollments found.</Typography>
-          ) : (
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="enrollments table">
+          <Box
+            component={Paper}
+            sx={{
+              height: 580,
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+            }}
+          >
+            <TableContainer sx={{ flex: 1, overflow: "auto" }}>
+              <Table
+                sx={{
+                  minWidth: 650,
+                  borderCollapse: "separate",
+                  borderSpacing: 0,
+                  "& .MuiTableCell-root": {
+                    borderLeft: "1px solid rgba(224, 224, 224, 1)",
+                    borderBottom: "1px solid rgba(224, 224, 224, 1)",
+                  },
+                  "& .MuiTableCell-root:last-child": {
+                    borderRight: "1px solid rgba(224, 224, 224, 1)",
+                  },
+                  "& .MuiTableHead-root .MuiTableCell-root": {
+                    borderTop: "1px solid rgba(224, 224, 224, 1)",
+                    backgroundColor: "#f5f5f5",
+                    fontWeight: "bold",
+                  },
+                }}
+                aria-label="enrollments table"
+                stickyHeader
+              >
                 <TableHead>
                   <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Workshop</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Actions</TableCell>
+                    <TableCell sx={{ width: "20%" }}>Name</TableCell>
+                    <TableCell sx={{ width: "25%" }}>Email</TableCell>
+                    <TableCell sx={{ width: "20%" }}>Workshop</TableCell>
+                    <TableCell sx={{ width: "15%" }}>Status</TableCell>
+                    <TableCell sx={{ width: "10%" }}>Date</TableCell>
+                    <TableCell sx={{ width: "10%" }}>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {enrollments.map((enrollment) => (
                     <TableRow
                       key={enrollment.id}
+                      hover
                       sx={{
-                        "&:last-child td, &:last-child th": {
-                          border: 0,
+                        height: 52,
+                        "&:hover": {
+                          backgroundColor: "rgba(0, 0, 0, 0.04) !important",
                         },
                       }}
                     >
@@ -126,8 +154,23 @@ export const EnrollmentTable: React.FC<Props> = ({
                   ))}
                 </TableBody>
               </Table>
+              {(!enrollments || enrollments.length === 0) && (
+                <Box
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minHeight: 500,
+                  }}
+                >
+                  <Typography color="textSecondary" variant="h6">
+                    No enrollments found.
+                  </Typography>
+                </Box>
+              )}
             </TableContainer>
-          )}
+          </Box>
         </Stack>
       </CardContent>
     </Card>
