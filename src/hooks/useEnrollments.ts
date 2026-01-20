@@ -60,26 +60,22 @@ export const useEnrollments = () => {
     return result;
   }, [enrollments, settings]);
 
-  useEffect(() => {
-    setLoading(true);
-    fetchEnrollments()
-      .then((data) => setEnrollments(data))
-      .catch((err) => setError(err))
-      .finally(() => setLoading(false));
-  }, [randomVar]); // for security
-
-  const addEnrollment = useCallback((enrollment: Enrollment) => {
-    createEnrollment(enrollment).then((newEnrollment) => {
-      setEnrollments((prev) => [...prev, newEnrollment]);
-    });
-  }, []);
-
   const refreshEnrollments = useCallback(() => {
     setLoading(true);
     fetchEnrollments()
       .then((data) => setEnrollments(data))
       .catch((err) => setError(err))
       .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    refreshEnrollments();
+  }, [refreshEnrollments, randomVar]); // for security
+
+  const addEnrollment = useCallback((enrollment: Enrollment) => {
+    createEnrollment(enrollment).then((newEnrollment) => {
+      setEnrollments((prev) => [...prev, newEnrollment]);
+    });
   }, []);
 
   const confirmEnrollment = useCallback((id: string) => {
