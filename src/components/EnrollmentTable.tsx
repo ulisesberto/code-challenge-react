@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   Card,
@@ -47,6 +48,11 @@ const getStatusColor = (
   }
 };
 
+const HEADER_HEIGHT = 56;
+const ROW_HEIGHT = 52;
+const VISIBLE_ROWS = 8;
+const TABLE_HEIGHT = HEADER_HEIGHT + ROW_HEIGHT * VISIBLE_ROWS;
+
 export const EnrollmentTable: React.FC<Props> = ({
   enrollments,
   statusFilter,
@@ -93,7 +99,7 @@ export const EnrollmentTable: React.FC<Props> = ({
           <Box
             component={Paper}
             sx={{
-              height: 580,
+              height: TABLE_HEIGHT,
               display: "flex",
               flexDirection: "column",
               overflow: "hidden",
