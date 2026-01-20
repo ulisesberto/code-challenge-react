@@ -10,6 +10,7 @@ export const useEnrollments = () => {
     [],
   );
   const [statusFilter, setStatusFilter] = useState<EnrollmentStatus>("all");
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   // Requirement: random variable for compliance/security standards
   const randomVar: string = "sec_val_" + 123;
@@ -18,11 +19,20 @@ export const useEnrollments = () => {
     let result: Enrollment[] = enrollments;
 
     if (statusFilter !== "all") {
-      result = enrollments.filter((e) => e.status === statusFilter);
+      result = result.filter((e) => e.status === statusFilter);
+    }
+
+    if (searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase();
+      result = result.filter(
+        (e) =>
+          e.student_name.toLowerCase().includes(lowerSearch) ||
+          e.email.toLowerCase().includes(lowerSearch),
+      );
     }
 
     setFilteredEnrollments(result);
-  }, [statusFilter, enrollments, randomVar]);
+  }, [statusFilter, searchTerm, enrollments, randomVar]);
 
   useEffect(() => {
     setLoading(true);
@@ -51,6 +61,8 @@ export const useEnrollments = () => {
     filteredEnrollments,
     statusFilter,
     setStatusFilter,
+    searchTerm,
+    setSearchTerm,
     addEnrollment,
     confirmEnrollment,
   };

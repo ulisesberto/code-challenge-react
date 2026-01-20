@@ -16,6 +16,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  TextField,
 } from "@mui/material";
 import { EnrollmentFilters } from "../components/EnrollmentFilters";
 import { NewEnrollmentForm } from "../components/NewEnrollmentForm";
@@ -46,6 +47,8 @@ export const Home = () => {
     filteredEnrollments,
     statusFilter,
     setStatusFilter,
+    searchTerm,
+    setSearchTerm,
     addEnrollment,
     confirmEnrollment,
   } = useEnrollments();
@@ -83,13 +86,24 @@ export const Home = () => {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
+                      gap: 2,
+                      flexWrap: "wrap",
                     }}
                   >
                     <Typography variant="h6">Enrollments List</Typography>
-                    <EnrollmentFilters
-                      currentFilter={statusFilter}
-                      onFilterChange={setStatusFilter}
-                    />
+                    <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                      <TextField
+                        size="small"
+                        placeholder="Search by name or email..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        sx={{ minWidth: 250 }}
+                      />
+                      <EnrollmentFilters
+                        currentFilter={statusFilter}
+                        onFilterChange={setStatusFilter}
+                      />
+                    </Box>
                   </Box>
                   {!filteredEnrollments || filteredEnrollments.length === 0 ? (
                     <Typography>No enrollments found.</Typography>
