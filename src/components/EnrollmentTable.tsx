@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Card,
@@ -13,6 +12,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  TableSortLabel,
 } from "@mui/material";
 import { EnrollmentFilters } from "./EnrollmentFilters";
 import { EnrollmentSearchBar } from "./EnrollmentSearchBar";
@@ -25,6 +25,10 @@ interface Props {
   setStatusFilter: (status: EnrollmentStatus) => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
+  sortField: keyof Enrollment;
+  setSortField: (field: keyof Enrollment) => void;
+  sortOrder: "asc" | "desc";
+  setSortOrder: (order: "asc" | "desc") => void;
   onConfirm: (id: string) => void;
 }
 
@@ -49,8 +53,18 @@ export const EnrollmentTable: React.FC<Props> = ({
   setStatusFilter,
   searchTerm,
   setSearchTerm,
+  sortField,
+  setSortField,
+  sortOrder,
+  setSortOrder,
   onConfirm,
 }) => {
+  const handleSort = (field: keyof Enrollment) => {
+    const isAsc = sortField === field && sortOrder === "asc";
+    setSortOrder(isAsc ? "desc" : ("asc" as const));
+    setSortField(field);
+  };
+
   return (
     <Card>
       <CardContent>
@@ -109,11 +123,39 @@ export const EnrollmentTable: React.FC<Props> = ({
               >
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ width: "20%" }}>Name</TableCell>
-                    <TableCell sx={{ width: "25%" }}>Email</TableCell>
+                    <TableCell sx={{ width: "20%" }}>
+                      <TableSortLabel
+                        active={sortField === "student_name"}
+                        direction={
+                          sortField === "student_name" ? sortOrder : "asc"
+                        }
+                        onClick={() => handleSort("student_name")}
+                      >
+                        Name
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell sx={{ width: "25%" }}>
+                      <TableSortLabel
+                        active={sortField === "email"}
+                        direction={sortField === "email" ? sortOrder : "asc"}
+                        onClick={() => handleSort("email")}
+                      >
+                        Email
+                      </TableSortLabel>
+                    </TableCell>
                     <TableCell sx={{ width: "20%" }}>Workshop</TableCell>
                     <TableCell sx={{ width: "15%" }}>Status</TableCell>
-                    <TableCell sx={{ width: "10%" }}>Date</TableCell>
+                    <TableCell sx={{ width: "10%" }}>
+                      <TableSortLabel
+                        active={sortField === "created_at"}
+                        direction={
+                          sortField === "created_at" ? sortOrder : "asc"
+                        }
+                        onClick={() => handleSort("created_at")}
+                      >
+                        Date
+                      </TableSortLabel>
+                    </TableCell>
                     <TableCell sx={{ width: "10%" }}>Actions</TableCell>
                   </TableRow>
                 </TableHead>

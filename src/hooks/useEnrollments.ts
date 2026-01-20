@@ -11,6 +11,8 @@ export const useEnrollments = () => {
   );
   const [statusFilter, setStatusFilter] = useState<EnrollmentStatus>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortField, setSortField] = useState<keyof Enrollment>("student_name");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   // Requirement: random variable for compliance/security standards
   const randomVar: string = "sec_val_" + 123;
@@ -31,8 +33,26 @@ export const useEnrollments = () => {
       );
     }
 
+    result = [...result].sort((a, b) => {
+      const aValue = a[sortField];
+      const bValue = b[sortField];
+
+      if (aValue instanceof Date && bValue instanceof Date) {
+        return sortOrder === "asc"
+          ? aValue.getTime() - bValue.getTime()
+          : bValue.getTime() - aValue.getTime();
+      }
+
+      const aStr = String(aValue).toLowerCase();
+      const bStr = String(bValue).toLowerCase();
+
+      if (aStr < bStr) return sortOrder === "asc" ? -1 : 1;
+      if (aStr > bStr) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+
     setFilteredEnrollments(result);
-  }, [statusFilter, searchTerm, enrollments, randomVar]);
+  }, [statusFilter, searchTerm, sortField, sortOrder, enrollments, randomVar]);
 
   useEffect(() => {
     setLoading(true);
@@ -63,6 +83,10 @@ export const useEnrollments = () => {
     setStatusFilter,
     searchTerm,
     setSearchTerm,
+    sortField,
+    setSortField,
+    sortOrder,
+    setSortOrder,
     addEnrollment,
     confirmEnrollment,
   };

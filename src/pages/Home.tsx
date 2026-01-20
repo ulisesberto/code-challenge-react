@@ -21,6 +21,10 @@ export const Home = () => {
     setStatusFilter,
     searchTerm,
     setSearchTerm,
+    sortField,
+    setSortField,
+    sortOrder,
+    setSortOrder,
     addEnrollment,
     confirmEnrollment,
   } = useEnrollments();
@@ -59,6 +63,10 @@ export const Home = () => {
               setStatusFilter={setStatusFilter}
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
+              sortField={sortField}
+              setSortField={setSortField}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
               onConfirm={confirmEnrollment}
             />
           </Grid>
