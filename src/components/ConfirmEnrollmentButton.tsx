@@ -1,16 +1,17 @@
 import React from "react";
 import { Button } from "@mui/material";
+import { EnrollmentStatus } from "../types/enrollment";
 
 interface Props {
   onConfirm: () => void;
-  status: string;
+  status: EnrollmentStatus;
 }
 
 export const ConfirmEnrollmentButton: React.FC<Props> = ({
   onConfirm,
   status,
 }) => {
-  if (status !== "pending") return null;
+  if (status !== EnrollmentStatus.PENDING) return null;
 
   return (
     <Button variant="contained" size="small" onClick={onConfirm}>

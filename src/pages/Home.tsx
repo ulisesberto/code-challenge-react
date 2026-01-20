@@ -2,22 +2,21 @@ import { Alert, Grid, Stack, Typography } from "@mui/material";
 import { NewEnrollmentForm } from "../components/NewEnrollmentForm";
 import { EnrollmentTable } from "../components/EnrollmentTable";
 import { Layout } from "../components/Layout";
-import { Loading } from "../components/Loading";
 import { useEnrollments } from "../hooks/useEnrollments";
 
 export const Home = () => {
   const {
     loading,
     error,
-    enrollments,
     filteredEnrollments,
     settings,
     setSettings,
     addEnrollment,
     confirmEnrollment,
+    refreshEnrollments,
   } = useEnrollments();
 
-  if (loading) return <Loading />;
+  // Loading is now handled within components (skeletons)
 
   if (error)
     return (
@@ -29,7 +28,11 @@ export const Home = () => {
   return (
     <Layout>
       <Stack spacing={3}>
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{ color: "secondary.main", mb: 4 }}
+        >
           Enrollments Overview
         </Typography>
 
@@ -37,12 +40,14 @@ export const Home = () => {
           <Grid size={{ xs: 12, md: 12 }}>
             <EnrollmentTable
               enrollments={filteredEnrollments}
+              loading={loading}
               settings={settings}
               setSettings={setSettings}
               onConfirm={confirmEnrollment}
+              onRefresh={refreshEnrollments}
             />
           </Grid>
-          <Grid size={{ xs: 12, md: enrollments.length === 0 ? 12 : 4 }}>
+          <Grid size={{ xs: 12 }}>
             <NewEnrollmentForm onCreate={addEnrollment} />
           </Grid>
         </Grid>

@@ -14,32 +14,35 @@ import {
   TableRow,
   Typography,
   TableSortLabel,
+  Skeleton,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
+import { Refresh as RefreshIcon } from "@mui/icons-material";
 import { EnrollmentFilters } from "./EnrollmentFilters";
 import { EnrollmentSearchBar } from "./EnrollmentSearchBar";
 import { ConfirmEnrollmentButton } from "./ConfirmEnrollmentButton";
-import type {
-  Enrollment,
-  EnrollmentStatus,
-  TableSettings,
-} from "../types/enrollment";
+import { EnrollmentStatus } from "../types/enrollment";
+import type { Enrollment, TableSettings } from "../types/enrollment";
 
 interface Props {
   enrollments: Enrollment[];
+  loading?: boolean;
   settings: TableSettings;
   setSettings: React.Dispatch<React.SetStateAction<TableSettings>>;
   onConfirm: (id: string) => void;
+  onRefresh?: () => void;
 }
 
 const getStatusColor = (
   status: EnrollmentStatus,
 ): "success" | "warning" | "error" | "default" => {
   switch (status) {
-    case "confirmed":
+    case EnrollmentStatus.CONFIRMED:
       return "success";
-    case "pending":
+    case EnrollmentStatus.PENDING:
       return "warning";
-    case "cancelled":
+    case EnrollmentStatus.CANCELLED:
       return "error";
     default:
       return "default";
@@ -53,9 +56,11 @@ const TABLE_HEIGHT = HEADER_HEIGHT + ROW_HEIGHT * VISIBLE_ROWS;
 
 export const EnrollmentTable: React.FC<Props> = ({
   enrollments,
+  loading = false,
   settings,
   setSettings,
   onConfirm,
+  onRefresh,
 }) => {
   const { statusFilter, searchTerm, sortField, sortOrder } = settings;
 
@@ -81,18 +86,26 @@ export const EnrollmentTable: React.FC<Props> = ({
               flexWrap: "wrap",
             }}
           >
-            <Typography variant="h6">Enrollments List</Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography variant="h6">Enrollments List</Typography>
+              {onRefresh && (
+                <Tooltip title="Refresh data">
+                  <IconButton
+                    onClick={onRefresh}
+                    disabled={loading}
+                    size="small"
+                    sx={{ color: "primary.main" }}
+                  >
+                    <RefreshIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </Box>
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
               <EnrollmentSearchBar
                 value={searchTerm}
                 onChange={(val) =>
                   setSettings((prev) => ({ ...prev, searchTerm: val }))
-                }
-              />
-              <EnrollmentFilters
-                currentFilter={statusFilter}
-                onFilterChange={(val) =>
-                  setSettings((prev) => ({ ...prev, statusFilter: val }))
                 }
               />
             </Box>
@@ -113,16 +126,22 @@ export const EnrollmentTable: React.FC<Props> = ({
                   borderCollapse: "separate",
                   borderSpacing: 0,
                   "& .MuiTableCell-root": {
-                    borderLeft: "1px solid rgba(224, 224, 224, 1)",
-                    borderBottom: "1px solid rgba(224, 224, 224, 1)",
+                    borderLeft: "1px solid #E2E8F0",
+                    borderBottom: "1px solid #E2E8F0",
+                    color: "text.secondary",
+                    fontSize: "0.875rem",
                   },
                   "& .MuiTableCell-root:last-child": {
-                    borderRight: "1px solid rgba(224, 224, 224, 1)",
+                    borderRight: "1px solid #E2E8F0",
                   },
                   "& .MuiTableHead-root .MuiTableCell-root": {
-                    borderTop: "1px solid rgba(224, 224, 224, 1)",
-                    backgroundColor: "#f5f5f5",
-                    fontWeight: "bold",
+                    borderTop: "1px solid #E2E8F0",
+                    backgroundColor: "#F8FAFC",
+                    fontWeight: 700,
+                    color: "secondary.main",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                    fontSize: "0.75rem",
                   },
                 }}
                 aria-label="enrollments table"
@@ -151,7 +170,17 @@ export const EnrollmentTable: React.FC<Props> = ({
                       </TableSortLabel>
                     </TableCell>
                     <TableCell sx={{ width: "20%" }}>Workshop</TableCell>
-                    <TableCell sx={{ width: "15%" }}>Status</TableCell>
+                    <TableCell sx={{ width: "15%", py: 0 }}>
+                      <EnrollmentFilters
+                        currentFilter={statusFilter}
+                        onFilterChange={(val) =>
+                          setSettings((prev) => ({
+                            ...prev,
+                            statusFilter: val,
+                          }))
+                        }
+                      />
+                    </TableCell>
                     <TableCell sx={{ width: "10%" }}>
                       <TableSortLabel
                         active={sortField === "created_at"}
@@ -167,43 +196,78 @@ export const EnrollmentTable: React.FC<Props> = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {enrollments.map((enrollment) => (
-                    <TableRow
-                      key={enrollment.id}
-                      hover
-                      sx={{
-                        height: ROW_HEIGHT,
-                        "&:hover": {
-                          backgroundColor: "rgba(0, 0, 0, 0.04) !important",
-                        },
-                      }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {enrollment.student_name}
-                      </TableCell>
-                      <TableCell>{enrollment.email}</TableCell>
-                      <TableCell>{enrollment.workshop}</TableCell>
-                      <TableCell>
-                        <Chip
-                          label={enrollment.status}
-                          color={getStatusColor(enrollment.status)}
-                          size="small"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {enrollment.created_at.toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>
-                        <ConfirmEnrollmentButton
-                          status={enrollment.status}
-                          onConfirm={() => onConfirm(enrollment.id)}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {loading
+                    ? Array.from(new Array(VISIBLE_ROWS)).map((_, index) => (
+                        <TableRow
+                          key={`skeleton-${index}`}
+                          sx={{ height: ROW_HEIGHT }}
+                        >
+                          <TableCell>
+                            <Skeleton variant="text" width="80%" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton variant="text" width="90%" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton variant="text" width="70%" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton
+                              variant="rounded"
+                              width={80}
+                              height={24}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton variant="text" width="60%" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton
+                              variant="circular"
+                              width={32}
+                              height={32}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    : enrollments.map((enrollment) => (
+                        <TableRow
+                          key={enrollment.id}
+                          hover
+                          sx={{
+                            height: ROW_HEIGHT,
+                            "&:hover": {
+                              backgroundColor:
+                                "rgba(0, 163, 255, 0.04) !important",
+                            },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {enrollment.student_name}
+                          </TableCell>
+                          <TableCell>{enrollment.email}</TableCell>
+                          <TableCell>{enrollment.workshop}</TableCell>
+                          <TableCell>
+                            <Chip
+                              label={enrollment.status}
+                              color={getStatusColor(enrollment.status)}
+                              size="small"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            {enrollment.created_at.toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>
+                            <ConfirmEnrollmentButton
+                              status={enrollment.status}
+                              onConfirm={() => onConfirm(enrollment.id)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))}
                 </TableBody>
               </Table>
-              {(!enrollments || enrollments.length === 0) && (
+              {!loading && (!enrollments || enrollments.length === 0) && (
                 <Box
                   sx={{
                     height: "100%",
@@ -213,7 +277,7 @@ export const EnrollmentTable: React.FC<Props> = ({
                     minHeight: 500,
                   }}
                 >
-                  <Typography color="textSecondary" variant="h6">
+                  <Typography color="text.secondary" variant="h6">
                     No enrollments found.
                   </Typography>
                 </Box>

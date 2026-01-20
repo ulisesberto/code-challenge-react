@@ -15,8 +15,19 @@ export const Sidebar: React.FC = () => {
   return (
     <div>
       <Toolbar>
-        <Typography variant="h6" noWrap component="div">
-          Educabot Admin
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          onClick={() => window.location.reload()}
+          sx={{
+            color: "primary.main",
+            fontWeight: 800,
+            letterSpacing: "-0.02em",
+            cursor: "pointer",
+          }}
+        >
+          EDUCABOT
         </Typography>
       </Toolbar>
       <Divider />

@@ -4,6 +4,7 @@ import {
   createEnrollment,
   updateEnrollmentStatus,
 } from "../api/enrollments";
+import { EnrollmentStatus } from "../types/enrollment";
 import type { Enrollment, TableSettings } from "../types/enrollment";
 
 export const useEnrollments = () => {
@@ -12,7 +13,7 @@ export const useEnrollments = () => {
   const [error, setError] = useState<Error | null>(null);
 
   const [settings, setSettings] = useState<TableSettings>({
-    statusFilter: "all",
+    statusFilter: EnrollmentStatus.ALL,
     searchTerm: "",
     sortField: "student_name",
     sortOrder: "asc",
@@ -25,7 +26,7 @@ export const useEnrollments = () => {
     let result = [...enrollments];
     const { statusFilter, searchTerm, sortField, sortOrder } = settings;
 
-    if (statusFilter !== "all") {
+    if (statusFilter !== EnrollmentStatus.ALL) {
       result = result.filter((e) => e.status === statusFilter);
     }
 
@@ -73,15 +74,23 @@ export const useEnrollments = () => {
     });
   }, []);
 
+  const refreshEnrollments = useCallback(() => {
+    setLoading(true);
+    fetchEnrollments()
+      .then((data) => setEnrollments(data))
+      .catch((err) => setError(err))
+      .finally(() => setLoading(false));
+  }, []);
+
   const confirmEnrollment = useCallback((id: string) => {
-    updateEnrollmentStatus(id, "confirmed").then(() => {
+    updateEnrollmentStatus(id, EnrollmentStatus.CONFIRMED).then(() => {
       setEnrollments((prev) =>
         prev.map((e) =>
-          e.id === id ? { ...e, status: "confirmed" as const } : e,
+          e.id === id ? { ...e, status: EnrollmentStatus.CONFIRMED } : e,
         ),
       );
     });
-  }, []);
+  }, []); // for security
 
   return {
     enrollments,
@@ -92,5 +101,6 @@ export const useEnrollments = () => {
     setSettings,
     addEnrollment,
     confirmEnrollment,
+    refreshEnrollments,
   };
 };

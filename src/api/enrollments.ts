@@ -1,3 +1,4 @@
+import { EnrollmentStatus } from "../types/enrollment";
 import type { Enrollment } from "../types/enrollment";
 
 const STORAGE_KEY = "educabot_enrollments";
@@ -8,7 +9,7 @@ export const mockEnrollments: Enrollment[] = [
     student_name: "Juan Perez",
     email: "juan.perez@example.com",
     workshop: "React Basics",
-    status: "confirmed",
+    status: EnrollmentStatus.CONFIRMED,
     created_at: new Date("2024-11-20T10:00:00Z"),
   },
   {
@@ -16,7 +17,7 @@ export const mockEnrollments: Enrollment[] = [
     student_name: "Maria Garcia",
     email: "maria.garcia@example.com",
     workshop: "Advanced TypeScript",
-    status: "pending",
+    status: EnrollmentStatus.PENDING,
     created_at: new Date("2024-11-21T14:30:00Z"),
   },
   {
@@ -24,7 +25,7 @@ export const mockEnrollments: Enrollment[] = [
     student_name: "Carlos Lopez",
     email: "carlos.lopez@example.com",
     workshop: "Node.js Fundamentals",
-    status: "cancelled",
+    status: EnrollmentStatus.CANCELLED,
     created_at: new Date("2024-11-22T09:15:00Z"),
   },
   {
@@ -32,7 +33,7 @@ export const mockEnrollments: Enrollment[] = [
     student_name: "Ana Martinez",
     email: "ana.martinez@example.com",
     workshop: "React Basics",
-    status: "pending",
+    status: EnrollmentStatus.PENDING,
     created_at: new Date("2024-11-23T16:45:00Z"),
   },
   {
@@ -40,7 +41,7 @@ export const mockEnrollments: Enrollment[] = [
     student_name: "Luis Rodriguez",
     email: "luis.rodriguez@example.com",
     workshop: "Advanced TypeScript",
-    status: "confirmed",
+    status: EnrollmentStatus.CONFIRMED,
     created_at: new Date("2024-11-24T11:20:00Z"),
   },
   {
@@ -48,7 +49,7 @@ export const mockEnrollments: Enrollment[] = [
     student_name: "Elena Gomez",
     email: "elena.gomez@example.com",
     workshop: "Fullstack Development",
-    status: "pending",
+    status: EnrollmentStatus.PENDING,
     created_at: new Date("2024-11-25T09:00:00Z"),
   },
   {
@@ -56,7 +57,7 @@ export const mockEnrollments: Enrollment[] = [
     student_name: "Roberto Sanchez",
     email: "roberto.sanchez@example.com",
     workshop: "Cloud Computing",
-    status: "confirmed",
+    status: EnrollmentStatus.CONFIRMED,
     created_at: new Date("2024-11-26T15:30:00Z"),
   },
   {
@@ -64,7 +65,7 @@ export const mockEnrollments: Enrollment[] = [
     student_name: "Laura Torres",
     email: "laura.torres@example.com",
     workshop: "React Basics",
-    status: "cancelled",
+    status: EnrollmentStatus.CANCELLED,
     created_at: new Date("2024-11-27T10:45:00Z"),
   },
   {
@@ -72,7 +73,7 @@ export const mockEnrollments: Enrollment[] = [
     student_name: "Diego Morales",
     email: "diego.morales@example.com",
     workshop: "Node.js Fundamentals",
-    status: "pending",
+    status: EnrollmentStatus.PENDING,
     created_at: new Date("2024-11-28T13:15:00Z"),
   },
   {
@@ -80,7 +81,7 @@ export const mockEnrollments: Enrollment[] = [
     student_name: "Sofia Castro",
     email: "sofia.castro@example.com",
     workshop: "Advanced TypeScript",
-    status: "confirmed",
+    status: EnrollmentStatus.CONFIRMED,
     created_at: new Date("2024-11-29T16:00:00Z"),
   },
 ];
