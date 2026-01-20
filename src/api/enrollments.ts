@@ -1,4 +1,6 @@
-export const mockEnrollments = [
+import type { Enrollment } from "../types/enrollment";
+
+export const mockEnrollments: Enrollment[] = [
   {
     id: "1",
     student_name: "Juan Perez",
@@ -31,12 +33,12 @@ export const mockEnrollments = [
     status: "pending",
     created_at: new Date("2024-11-23T16:45:00Z"),
   },
-]
+];
 
-export const fetchEnrollments = (): Promise<any[]> => {
+export const fetchEnrollments = (): Promise<Enrollment[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve([...mockEnrollments])
-    }, 800)
-  })
-}
+      resolve([...mockEnrollments]);
+    }, 800);
+  });
+};
