@@ -1,14 +1,8 @@
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Alert, Grid, Stack, Typography } from "@mui/material";
 import { NewEnrollmentForm } from "../components/NewEnrollmentForm";
 import { EnrollmentTable } from "../components/EnrollmentTable";
 import { Layout } from "../components/Layout";
+import { Loading } from "../components/Loading";
 import { useEnrollments } from "../hooks/useEnrollments";
 
 export const Home = () => {
@@ -17,26 +11,13 @@ export const Home = () => {
     error,
     enrollments,
     filteredEnrollments,
-    statusFilter,
-    setStatusFilter,
-    searchTerm,
-    setSearchTerm,
-    sortField,
-    setSortField,
-    sortOrder,
-    setSortOrder,
+    settings,
+    setSettings,
     addEnrollment,
     confirmEnrollment,
   } = useEnrollments();
 
-  if (loading)
-    return (
-      <Layout>
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-          <CircularProgress />
-        </Box>
-      </Layout>
-    );
+  if (loading) return <Loading />;
 
   if (error)
     return (
@@ -53,22 +34,16 @@ export const Home = () => {
         </Typography>
 
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: enrollments.length === 0 ? 12 : 4 }}>
-            <NewEnrollmentForm onCreate={addEnrollment} />
-          </Grid>
           <Grid size={{ xs: 12, md: 12 }}>
             <EnrollmentTable
               enrollments={filteredEnrollments}
-              statusFilter={statusFilter}
-              setStatusFilter={setStatusFilter}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              sortField={sortField}
-              setSortField={setSortField}
-              sortOrder={sortOrder}
-              setSortOrder={setSortOrder}
+              settings={settings}
+              setSettings={setSettings}
               onConfirm={confirmEnrollment}
             />
+          </Grid>
+          <Grid size={{ xs: 12, md: enrollments.length === 0 ? 12 : 4 }}>
+            <NewEnrollmentForm onCreate={addEnrollment} />
           </Grid>
         </Grid>
       </Stack>

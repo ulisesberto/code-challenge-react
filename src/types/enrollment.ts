@@ -8,3 +8,10 @@ export interface Enrollment {
   status: Exclude<EnrollmentStatus, "all">;
   created_at: Date;
 }
+
+export interface TableSettings {
+  statusFilter: EnrollmentStatus;
+  searchTerm: string;
+  sortField: keyof Enrollment;
+  sortOrder: "asc" | "desc";
+}

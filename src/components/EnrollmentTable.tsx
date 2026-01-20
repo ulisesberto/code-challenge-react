@@ -18,18 +18,16 @@ import {
 import { EnrollmentFilters } from "./EnrollmentFilters";
 import { EnrollmentSearchBar } from "./EnrollmentSearchBar";
 import { ConfirmEnrollmentButton } from "./ConfirmEnrollmentButton";
-import type { Enrollment, EnrollmentStatus } from "../types/enrollment";
+import type {
+  Enrollment,
+  EnrollmentStatus,
+  TableSettings,
+} from "../types/enrollment";
 
 interface Props {
   enrollments: Enrollment[];
-  statusFilter: EnrollmentStatus;
-  setStatusFilter: (status: EnrollmentStatus) => void;
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
-  sortField: keyof Enrollment;
-  setSortField: (field: keyof Enrollment) => void;
-  sortOrder: "asc" | "desc";
-  setSortOrder: (order: "asc" | "desc") => void;
+  settings: TableSettings;
+  setSettings: React.Dispatch<React.SetStateAction<TableSettings>>;
   onConfirm: (id: string) => void;
 }
 
@@ -55,20 +53,19 @@ const TABLE_HEIGHT = HEADER_HEIGHT + ROW_HEIGHT * VISIBLE_ROWS;
 
 export const EnrollmentTable: React.FC<Props> = ({
   enrollments,
-  statusFilter,
-  setStatusFilter,
-  searchTerm,
-  setSearchTerm,
-  sortField,
-  setSortField,
-  sortOrder,
-  setSortOrder,
+  settings,
+  setSettings,
   onConfirm,
 }) => {
+  const { statusFilter, searchTerm, sortField, sortOrder } = settings;
+
   const handleSort = (field: keyof Enrollment) => {
-    const isAsc = sortField === field && sortOrder === "asc";
-    setSortOrder(isAsc ? "desc" : ("asc" as const));
-    setSortField(field);
+    setSettings((prev) => ({
+      ...prev,
+      sortField: field,
+      sortOrder:
+        prev.sortField === field && prev.sortOrder === "asc" ? "desc" : "asc",
+    }));
   };
 
   return (
@@ -88,11 +85,15 @@ export const EnrollmentTable: React.FC<Props> = ({
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
               <EnrollmentSearchBar
                 value={searchTerm}
-                onChange={setSearchTerm}
+                onChange={(val) =>
+                  setSettings((prev) => ({ ...prev, searchTerm: val }))
+                }
               />
               <EnrollmentFilters
                 currentFilter={statusFilter}
-                onFilterChange={setStatusFilter}
+                onFilterChange={(val) =>
+                  setSettings((prev) => ({ ...prev, statusFilter: val }))
+                }
               />
             </Box>
           </Box>
@@ -171,7 +172,7 @@ export const EnrollmentTable: React.FC<Props> = ({
                       key={enrollment.id}
                       hover
                       sx={{
-                        height: 52,
+                        height: ROW_HEIGHT,
                         "&:hover": {
                           backgroundColor: "rgba(0, 0, 0, 0.04) !important",
                         },

@@ -1,5 +1,7 @@
 import type { Enrollment } from "../types/enrollment";
 
+const STORAGE_KEY = "educabot_enrollments";
+
 export const mockEnrollments: Enrollment[] = [
   {
     id: "1",
@@ -83,10 +85,54 @@ export const mockEnrollments: Enrollment[] = [
   },
 ];
 
+const getStoredEnrollments = (): Enrollment[] => {
+  const stored = sessionStorage.getItem(STORAGE_KEY);
+  if (!stored) {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(mockEnrollments));
+    return mockEnrollments;
+  }
+  const data = JSON.parse(stored);
+  return data.map((e: any) => ({
+    ...e,
+    created_at: new Date(e.created_at),
+  }));
+};
+
+const saveEnrollments = (enrollments: Enrollment[]) => {
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(enrollments));
+};
+
 export const fetchEnrollments = (): Promise<Enrollment[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve([...mockEnrollments]);
+      resolve(getStoredEnrollments());
     }, 800);
+  });
+};
+
+export const createEnrollment = (
+  enrollment: Enrollment,
+): Promise<Enrollment> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const current = getStoredEnrollments();
+      const updated = [...current, enrollment];
+      saveEnrollments(updated);
+      resolve(enrollment);
+    }, 500);
+  });
+};
+
+export const updateEnrollmentStatus = (
+  id: string,
+  status: Enrollment["status"],
+): Promise<void> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const current = getStoredEnrollments();
+      const updated = current.map((e) => (e.id === id ? { ...e, status } : e));
+      saveEnrollments(updated);
+      resolve();
+    }, 500);
   });
 };
